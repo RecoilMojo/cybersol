@@ -96,9 +96,7 @@ export default function LeaderboardPage() {
         </h2>
         <p className="raffle-panel-copy">
           Rewards wallet{" "}
-          <span className="raffle-wallet">
-            {rewards ? shortWallet(rewards) : "TBA at token launch"}
-          </span>
+          <span className="raffle-wallet">{rewards || "TBC"}</span>
         </p>
         {round && round.winners.length > 0 ? (
           <ul className="raffle-winners">

@@ -26,7 +26,7 @@ export async function GET(req: Request) {
         winnersCount: config.raffleWinners,
         maxTicketsPerDay: config.maxTicketsPerDay,
         holdThreshold: config.holdThreshold,
-        rewardsWallet: config.rewardsWallet,
+        rewardsWallet: "",
         lastRound,
       },
     });
