@@ -7,6 +7,7 @@ import {
   cloneState,
   getPlayCost,
 } from "../src/lib/game/engine";
+import { chooseAiMoves } from "../src/lib/game/ai";
 import { CARD_DEFS, getCardDef } from "../src/lib/game/cards";
 import type { CardInstance, GameState } from "../src/lib/game/types";
 
@@ -1117,6 +1118,28 @@ function testHeroPowerAndFuryTaunt() {
   assert(u.keywords.fury && u.keywords.taunt, "fury + taunt granted");
 }
 
+function testAiDoesNotLoopCastOnManaGems() {
+  console.log("\n== AI Cast skips mana gems ==");
+  const state = createMatch("ai-cast-gem-loop");
+  state.active = "ai";
+  state.ai.hand = [];
+  state.ai.board = [];
+  state.ai.heroPowerReady = false;
+  state.ai.mana = 10;
+  state.ai.maxMana = 10;
+  const thrall = putOnBoard(state, "ai", "mind-locked-thrall", 0);
+  thrall.canActivate = true;
+  thrall.boardEnteredTurn = state.turn - 1;
+  state.ai.graveyard = ["blood-crystal", "energy-core"];
+  const t0 = Date.now();
+  const moves = chooseAiMoves(state);
+  assert(Date.now() - t0 < 250, "AI decide stays fast");
+  assert(
+    !moves.some((m) => m.type === "activate"),
+    "does not Cast to fetch Blood Crystal / Energy Core",
+  );
+}
+
 const before = cloneState(createMatch("noop"));
 void before;
 
@@ -1146,6 +1169,7 @@ testPierceAndCastCancel();
 testDamageTwice();
 testTauntWallAndFurySwing();
 testHeroPowerAndFuryTaunt();
+testAiDoesNotLoopCastOnManaGems();
 
 console.log(failed ? `\n${failed} failure(s)` : "\nAll ability checks passed");
 process.exit(failed ? 1 : 0);

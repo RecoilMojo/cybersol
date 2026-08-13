@@ -9,6 +9,7 @@ import { isGuestWallet, isValidSolanaAddress } from "@/lib/solana/address";
 import { verifyP2eAuth } from "@/lib/solana/verify-p2e";
 import { p2eAuthFields } from "@/lib/solana/p2e-auth-schema";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { publicDbError } from "@/lib/db/supabase";
 import { apiError, readJsonBody, rejectBadOrigin } from "@/lib/http";
 import {
   P2E_MIN_DURATION_MS,
@@ -200,6 +201,6 @@ export async function POST(req: Request) {
       maxTicketsPerDay: config.maxTicketsPerDay,
     });
   } catch (err) {
-    return apiError(500, "Server error", err);
+    return apiError(500, publicDbError(err), err);
   }
 }

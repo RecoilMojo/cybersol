@@ -15,10 +15,51 @@ import type {
 
 let client: SupabaseClient | null = null;
 
+/** Project root only — strips quotes, trailing slash, and a pasted /rest/v1 path. */
+export function normalizeSupabaseUrl(raw: string): string {
+  const trimmed = raw.trim().replace(/^["']|["']$/g, "");
+  if (!trimmed) return "";
+  try {
+    const parsed = new URL(trimmed.includes("://") ? trimmed : `https://${trimmed}`);
+    return parsed.origin;
+  } catch {
+    return trimmed.replace(/\/rest\/v1\/?$/i, "").replace(/\/+$/, "");
+  }
+}
+
+export function publicDbError(err: unknown): string {
+  const rec = err as { code?: string; message?: string; details?: string; cause?: unknown };
+  const blob = [rec.code, rec.message, rec.details, rec.cause, err instanceof Error ? err.message : err]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  if (blob.includes("enotfound") || blob.includes("fetch failed") || blob.includes("getaddrinfo")) {
+    return "Can't reach the database. Copy the Project URL from Supabase → Settings → API into Vercel SUPABASE_URL (no /rest/v1), then Redeploy.";
+  }
+  if (blob.includes("invalid api key") || blob.includes("invalid jwt")) {
+    return "Database key rejected. Use the service_role or sb_secret_ key, not anon/publishable.";
+  }
+  if (
+    rec.code === "42P01" ||
+    rec.code === "PGRST205" ||
+    blob.includes("schema cache") ||
+    blob.includes("does not exist")
+  ) {
+    return "Database tables are missing. Run supabase/schema.sql in the Supabase SQL editor.";
+  }
+  if (blob.includes("row-level security") || rec.code === "42501") {
+    return "Database blocked the write. SUPABASE_SERVICE_ROLE_KEY must be service_role or sb_secret_.";
+  }
+  return "Server error";
+}
+
 function sb(): SupabaseClient {
   if (!client) {
-    const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-    const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
+    const url = normalizeSupabaseUrl(
+      process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
+    );
+    const key = (process.env.SUPABASE_SERVICE_ROLE_KEY ?? "").trim();
     client = createClient(url, key, {
       auth: { persistSession: false },
     });

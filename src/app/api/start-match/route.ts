@@ -7,6 +7,7 @@ import { verifyP2eAuth } from "@/lib/solana/verify-p2e";
 import { p2eAuthFields } from "@/lib/solana/p2e-auth-schema";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { P2E_MAX_ACTIVE_MATCHES, P2E_MAX_FINISHES_PER_DAY, P2eActiveExistsError } from "@/lib/p2e-rules";
+import { publicDbError } from "@/lib/db/supabase";
 import { apiError, readJsonBody, rejectBadOrigin } from "@/lib/http";
 import type { MatchMode } from "@/lib/db/types";
 
@@ -137,6 +138,6 @@ export async function POST(req: Request) {
       mode: match.mode,
     });
   } catch (err) {
-    return apiError(500, "Server error", err);
+    return apiError(500, publicDbError(err), err);
   }
 }

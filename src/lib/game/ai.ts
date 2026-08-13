@@ -7,10 +7,14 @@ import {
   cloneState,
   getPlayCost,
   hasValidAbilityTargets,
+  isManaGem,
   isValidAbilityTarget,
   onPlayTargetAbility,
 } from "./engine";
 import { HERO_POWER_COST, MAX_BOARD, MAX_HAND, type GameInput, type GameState } from "./types";
+
+const MAX_AI_PLAY_STEPS = 16;
+const MAX_CAST_ACTIVATES = 2;
 
 /**
  * Greedy AI: resolve pending targets, play cards, attack with keyword awareness.
@@ -31,7 +35,8 @@ export function chooseAiMoves(state: GameState): GameInput[] {
         for (let i = 0; i < sim.ai.graveyard.length; i++) {
           const id = sim.ai.graveyard[i];
           const kind = getCardDef(id).kind;
-          if (sim.pendingGraveyard.filter === "spell" && kind !== "spell") continue;
+          if (sim.pendingGraveyard.filter === "spell" && (kind !== "spell" || isManaGem(id)))
+            continue;
           if (
             sim.pendingGraveyard.filter === "character" &&
             (kind === "spell" || kind === "structure" || kind === "equipment")
@@ -193,14 +198,18 @@ export function chooseAiMoves(state: GameState): GameInput[] {
   resolvePending();
 
   let played = true;
+  let playSteps = 0;
+  let castActivates = 0;
   while (
     played &&
+    playSteps < MAX_AI_PLAY_STEPS &&
     !sim.winner &&
     sim.active === "ai" &&
     !sim.pendingTarget &&
     !sim.pendingGraveyard
   ) {
     played = false;
+    playSteps += 1;
 
     if (
       sim.ai.heroPowerReady &&
@@ -248,14 +257,23 @@ export function chooseAiMoves(state: GameState): GameInput[] {
         continue;
       }
       if (!def.abilities.includes("cast_return_spell")) continue;
+      if (castActivates >= MAX_CAST_ACTIVATES) continue;
       const cast = abilityLines(["cast_return_spell"])[0];
       if (sim.ai.mana < (cast.activateCost ?? 2)) continue;
       if (sim.ai.hand.length >= MAX_HAND) continue;
-      if (!sim.ai.graveyard.some((id) => getCardDef(id).kind === "spell")) continue;
+      // Blood Crystal / Energy Core refund mana — Cast+replay is an infinite loop.
+      if (
+        !sim.ai.graveyard.some(
+          (id) => getCardDef(id).kind === "spell" && !isManaGem(id),
+        )
+      ) {
+        continue;
+      }
       const input: GameInput = { type: "activate", boardIndex: i };
       if (applyInput(sim, "ai", input)) {
         moves.push(input);
         played = true;
+        castActivates += 1;
         resolvePending();
         break;
       }

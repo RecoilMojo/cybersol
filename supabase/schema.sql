@@ -116,3 +116,7 @@ revoke all on function grant_raffle_ticket(text, uuid, int) from public;
 revoke all on function grant_raffle_ticket(text, uuid, int) from anon;
 revoke all on function grant_raffle_ticket(text, uuid, int) from authenticated;
 grant execute on function grant_raffle_ticket(text, uuid, int) to service_role;
+
+-- Newer Supabase projects do not always grant table access to service_role.
+grant usage on schema public to service_role;
+grant select, insert, update, delete on table players, matches, tickets, raffle_rounds to service_role;

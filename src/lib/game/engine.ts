@@ -120,8 +120,12 @@ function countAbilityAura(player: PlayerState, ability: AbilityId) {
 }
 
 /** Unity town_aura_dream3 / is_dream — Cyber Vamps only; Neutral gems stay full cost. */
+export function isManaGem(defId: string) {
+  return defId === "energy-core" || defId === "blood-crystal";
+}
+
 function receivesCostAura(defId: string) {
-  return defId !== "energy-core" && defId !== "blood-crystal";
+  return !isManaGem(defId);
 }
 
 export function getPlayCost(player: PlayerState, defId: string) {
