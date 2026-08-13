@@ -1988,28 +1988,35 @@ html:has(.play-page .tcg-arena) {
   position: relative;
 }
 
-/* Face aim sits between enemy hand and enemy board — in-flow so it never clips. */
+/* Face aim overlays the arena — no layout shift, above enemy hand backs. */
 .tcg-face-dock {
-  position: relative;
-  z-index: 12;
+  position: absolute;
+  left: 50%;
+  top: 4.6rem;
+  transform: translateX(-50%);
+  z-index: 40;
   display: flex;
   justify-content: center;
   align-items: center;
   pointer-events: none;
-  margin: 0.1rem 0 0.15rem;
+  margin: 0;
   padding: 0;
-  flex-shrink: 0;
-  overflow: visible;
+  width: max-content;
+  max-width: calc(100% - 1.2rem);
 }
 
 .tcg-face-dock .btn-face.tcg-face-top {
   pointer-events: auto;
   position: relative;
   transform: none;
-  z-index: 6;
+  z-index: 1;
   padding: 0.55rem 1.35rem;
   font-size: 1.05rem;
   letter-spacing: 0.14em;
+  box-shadow:
+    0 0 28px rgba(255, 59, 92, 0.5),
+    inset 0 0 16px rgba(255, 255, 255, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.55);
 }
 
 .tcg-board-row.ally {
@@ -7272,6 +7279,10 @@ body:has(.play-page) .site-footer {
     padding: 0;
   }
 
+  .tcg-face-dock {
+    top: 3.9rem;
+  }
+
   .tcg-face-dock .btn-face.tcg-face-top {
     transform: none;
     padding: 0.5rem 1rem;
@@ -7615,6 +7626,10 @@ body:has(.play-page) .site-footer {
   .tcg-card--board {
     width: 2.7rem;
     height: 3.55rem;
+  }
+
+  .tcg-face-dock {
+    top: 3.2rem;
   }
 
   .tcg-face-dock .btn-face.tcg-face-top {
