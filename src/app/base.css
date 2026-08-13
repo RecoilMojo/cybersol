@@ -361,23 +361,23 @@ body:has(.play-page .tcg-arena) .site-nav a {
 
 .wallet-adapter-modal-wrapper {
   z-index: 10050 !important;
-}
-
-.wallet-adapter-modal {
-  max-width: min(28rem, calc(100% - 1.5rem));
+  max-width: min(26rem, calc(100% - 2rem));
+  border: 1px solid rgba(255, 43, 214, 0.4);
+  background: rgba(10, 4, 20, 0.96);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
 }
 
 @media (max-width: 430px) {
-  .wallet-adapter-modal-wrapper {
-    padding: max(0.75rem, env(safe-area-inset-top, 0px)) 0.5rem
-      max(0.75rem, env(safe-area-inset-bottom, 0px)) !important;
-    align-items: flex-end !important;
+  .wallet-adapter-modal-container {
+    margin: 0.5rem;
+    min-height: calc(100dvh - 1rem);
+    align-items: flex-end;
   }
 
-  .wallet-adapter-modal {
+  .wallet-adapter-modal-wrapper {
+    padding: 0.75rem 0.5rem max(0.75rem, env(safe-area-inset-bottom, 0px)) !important;
     max-width: 100%;
-    width: calc(100% - 0.5rem);
-    margin-bottom: 0;
+    width: 100%;
   }
 
   .wallet-adapter-modal-list .wallet-adapter-button {
