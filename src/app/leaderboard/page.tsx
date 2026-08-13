@@ -53,10 +53,10 @@ export default function LeaderboardPage() {
       .catch((e) => setError(e instanceof Error ? e.message : "Failed"));
   }, []);
 
-  const pool = raffle ? formatSol(raffle.poolSol) : "…";
-  const winners = raffle?.winnersCount ?? "…";
-  const tickets = raffle?.maxTicketsPerDay ?? "…";
-  const hold = raffle ? formatHold(raffle.holdThreshold) : "…";
+  const pool = formatSol(raffle?.poolSol ?? 0.5);
+  const winners = raffle?.winnersCount ?? 3;
+  const tickets = raffle?.maxTicketsPerDay ?? 3;
+  const hold = formatHold(raffle?.holdThreshold ?? 10_000);
   const round = raffle?.lastRound;
   const rewards = raffle?.rewardsWallet ?? "";
 

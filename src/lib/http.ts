@@ -33,6 +33,8 @@ export function originAllowed(req: Request): boolean {
   addAllowedHost(allowed, process.env.VERCEL_URL);
   addAllowedHost(allowed, process.env.VERCEL_PROJECT_PRODUCTION_URL);
   addAllowedHost(allowed, process.env.VERCEL_BRANCH_URL);
+  addAllowedHost(allowed, "https://www.cybersol.org");
+  addAllowedHost(allowed, "https://cybersol.org");
   // Apex / www both valid when the configured site host is one of them.
   for (const hostName of [...allowed]) {
     if (hostName.startsWith("www.")) allowed.add(hostName.slice(4));
@@ -40,6 +42,10 @@ export function originAllowed(req: Request): boolean {
       allowed.add(`www.${hostName}`);
     }
   }
+
+  // Same-origin: browser Origin matches this request's Host.
+  const reqHost = req.headers.get("host")?.split(":")[0]?.toLowerCase();
+  if (reqHost && host === reqHost) return true;
 
   if (process.env.NODE_ENV !== "production") {
     addAllowedHost(allowed, "http://localhost:3000");

@@ -2,13 +2,10 @@ import { NextResponse } from "next/server";
 import { config } from "@/lib/config";
 import { db } from "@/lib/db";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { apiError, rejectBadOrigin } from "@/lib/http";
+import { apiError } from "@/lib/http";
 
 export async function GET(req: Request) {
   try {
-    const badOrigin = rejectBadOrigin(req);
-    if (badOrigin) return badOrigin;
-
     const ipLimit = rateLimit(`lb:${clientIp(req)}`, 40, 60_000);
     if (!ipLimit.ok) {
       return NextResponse.json(
