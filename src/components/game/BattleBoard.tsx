@@ -385,11 +385,41 @@ export function BattleBoard() {
       );
       return;
     }
-    void fetch(`/api/hold-check?wallet=${solanaWallet}`)
-      .then((r) => r.json())
-      .then((d) => {
-        setHoldMsg(d.eligible ? `Eligible · balance ${d.balance}` : d.reason);
-      });
+    setHoldMsg(null);
+    const ctrl = new AbortController();
+    const timeout = window.setTimeout(() => ctrl.abort(), 12_000);
+    void fetch(`/api/hold-check?wallet=${encodeURIComponent(solanaWallet)}`, {
+      signal: ctrl.signal,
+    })
+      .then(async (r) => {
+        const d = (await r.json()) as {
+          eligible?: boolean;
+          balance?: number;
+          reason?: string;
+          error?: string;
+        };
+        if (!r.ok) {
+          setHoldMsg(d.error ?? d.reason ?? "Hold check failed. Try again.");
+          return;
+        }
+        setHoldMsg(
+          d.eligible
+            ? `Eligible · balance ${Number(d.balance ?? 0).toLocaleString("en-US")}`
+            : d.reason ?? "Not eligible for P2E.",
+        );
+      })
+      .catch(() => {
+        if (ctrl.signal.aborted) {
+          setHoldMsg("Hold check timed out. You can still try Start Match.");
+        } else {
+          setHoldMsg("Hold check failed. You can still try Start Match.");
+        }
+      })
+      .finally(() => window.clearTimeout(timeout));
+    return () => {
+      ctrl.abort();
+      window.clearTimeout(timeout);
+    };
   }, [solanaWallet, mode]);
 
   const startMatch = useCallback(async () => {

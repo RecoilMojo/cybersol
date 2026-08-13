@@ -1427,10 +1427,16 @@ a.chip:hover {
   padding-bottom: 0.15rem;
 }
 
+/* Hide site chrome in-match — sticky wallet bar was covering Enemy HP / Attack Face. */
+body:has(.play-page .tcg-arena) .site-header-bar,
+body:has(.play-page .tcg-arena) .nav-comet-track {
+  display: none;
+}
+
 .play-page:has(.tcg-arena) {
   overflow: hidden;
-  height: calc(100dvh - 4.6rem - env(safe-area-inset-top, 0px));
-  max-height: calc(100dvh - 4.6rem - env(safe-area-inset-top, 0px));
+  height: calc(100dvh - env(safe-area-inset-top, 0px));
+  max-height: calc(100dvh - env(safe-area-inset-top, 0px));
   padding: 0 !important;
   padding-bottom: env(safe-area-inset-bottom, 0) !important;
 }
@@ -1627,6 +1633,8 @@ html:has(.play-page .tcg-arena) {
   align-items: center;
   gap: 0.65rem;
   margin-left: auto;
+  overflow: visible;
+  z-index: 5;
 }
 
 .enemy-resources {
@@ -1771,6 +1779,8 @@ html:has(.play-page .tcg-arena) {
 .hero-badge.enemy-hero {
   border-color: rgba(255, 59, 92, 0.75);
   box-shadow: 0 0 28px rgba(255, 59, 92, 0.35);
+  z-index: 5;
+  flex-shrink: 0;
 }
 
 .hero-badge.enemy-hero::before {
@@ -1992,8 +2002,9 @@ html:has(.play-page .tcg-arena) {
 .tcg-face-dock .btn-face.tcg-face-top {
   pointer-events: auto;
   position: relative;
-  /* Park higher in the empty band under the prompt / above ENEMY BOARD. */
-  transform: translateY(calc(-100% - 1.15rem));
+  /* Keep inside the arena — large negative translate was clipped by overflow:hidden. */
+  transform: translateY(-0.35rem);
+  z-index: 6;
   padding: 0.62rem 1.55rem;
   font-size: 1.18rem;
   letter-spacing: 0.14em;
@@ -7274,7 +7285,7 @@ body:has(.play-page) .site-footer {
   }
 
   .tcg-face-dock .btn-face.tcg-face-top {
-    transform: translateY(calc(-100% - 0.35rem));
+    transform: translateY(-0.2rem);
     padding: 0.55rem 1rem;
     min-height: 44px;
     font-size: 0.9rem;
@@ -7619,7 +7630,7 @@ body:has(.play-page) .site-footer {
   }
 
   .tcg-face-dock .btn-face.tcg-face-top {
-    transform: translateY(calc(-100% - 0.1rem));
+    transform: translateY(-0.15rem);
     padding: 0.45rem 0.8rem;
     min-height: 44px;
     font-size: 0.8rem;
