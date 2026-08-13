@@ -1427,16 +1427,11 @@ a.chip:hover {
   padding-bottom: 0.15rem;
 }
 
-/* Hide site chrome in-match — sticky wallet bar was covering Enemy HP / Attack Face. */
-body:has(.play-page .tcg-arena) .site-header-bar,
-body:has(.play-page .tcg-arena) .nav-comet-track {
-  display: none;
-}
-
+/* Keep site header in-match on desktop; phones still hide it below. */
 .play-page:has(.tcg-arena) {
   overflow: hidden;
-  height: calc(100dvh - env(safe-area-inset-top, 0px));
-  max-height: calc(100dvh - env(safe-area-inset-top, 0px));
+  height: calc(100dvh - 4.25rem - env(safe-area-inset-top, 0px));
+  max-height: calc(100dvh - 4.25rem - env(safe-area-inset-top, 0px));
   padding: 0 !important;
   padding-bottom: env(safe-area-inset-bottom, 0) !important;
 }
@@ -1595,7 +1590,7 @@ html:has(.play-page .tcg-arena) {
     0 0 0 1px rgba(255, 43, 214, 0.12) inset,
     0 24px 80px rgba(0, 0, 0, 0.45),
     0 0 60px rgba(46, 245, 255, 0.08);
-  padding: 0.3rem 0.6rem 0.55rem;
+  padding: 0.45rem 0.65rem 0.55rem;
   /* Fit viewport under sticky header — no page scrollbar on /play. */
   height: 100%;
   max-height: 100%;
@@ -1613,6 +1608,9 @@ html:has(.play-page .tcg-arena) {
   gap: 0.55rem;
   flex-shrink: 0;
   min-height: 0;
+  position: relative;
+  z-index: 8;
+  padding-top: 0.1rem;
 }
 
 .tcg-turn-box {
@@ -1822,6 +1820,11 @@ html:has(.play-page .tcg-arena) {
 }
 
 .hero-badge.enemy-hero .hero-badge-label {
+  top: 50%;
+  left: auto;
+  right: calc(100% + 0.28rem);
+  bottom: auto;
+  transform: translateY(-50%);
   border-color: rgba(255, 140, 160, 0.55);
   background: rgba(18, 4, 8, 0.92);
 }
@@ -1985,28 +1988,27 @@ html:has(.play-page .tcg-arena) {
   position: relative;
 }
 
-/* Face aim sits above enemy board without claiming midline height. */
+/* Face aim sits between enemy hand and enemy board — in-flow so it never clips. */
 .tcg-face-dock {
   position: relative;
-  height: 0;
   z-index: 12;
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
   pointer-events: none;
-  margin: 0;
+  margin: 0.1rem 0 0.15rem;
   padding: 0;
+  flex-shrink: 0;
   overflow: visible;
 }
 
 .tcg-face-dock .btn-face.tcg-face-top {
   pointer-events: auto;
   position: relative;
-  /* Keep inside the arena — large negative translate was clipped by overflow:hidden. */
-  transform: translateY(-0.35rem);
+  transform: none;
   z-index: 6;
-  padding: 0.62rem 1.55rem;
-  font-size: 1.18rem;
+  padding: 0.55rem 1.35rem;
+  font-size: 1.05rem;
   letter-spacing: 0.14em;
 }
 
@@ -7285,8 +7287,8 @@ body:has(.play-page) .site-footer {
   }
 
   .tcg-face-dock .btn-face.tcg-face-top {
-    transform: translateY(-0.2rem);
-    padding: 0.55rem 1rem;
+    transform: none;
+    padding: 0.5rem 1rem;
     min-height: 44px;
     font-size: 0.9rem;
     letter-spacing: 0.1em;
@@ -7630,7 +7632,7 @@ body:has(.play-page) .site-footer {
   }
 
   .tcg-face-dock .btn-face.tcg-face-top {
-    transform: translateY(-0.15rem);
+    transform: none;
     padding: 0.45rem 0.8rem;
     min-height: 44px;
     font-size: 0.8rem;
