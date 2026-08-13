@@ -1992,7 +1992,7 @@ html:has(.play-page .tcg-arena) {
 .tcg-face-dock {
   position: absolute;
   left: 50%;
-  top: 4.6rem;
+  top: 2.85rem;
   transform: translateX(-50%);
   z-index: 40;
   display: flex;
@@ -7280,7 +7280,7 @@ body:has(.play-page) .site-footer {
   }
 
   .tcg-face-dock {
-    top: 3.9rem;
+    top: 2.4rem;
   }
 
   .tcg-face-dock .btn-face.tcg-face-top {
@@ -7629,7 +7629,7 @@ body:has(.play-page) .site-footer {
   }
 
   .tcg-face-dock {
-    top: 3.2rem;
+    top: 2.1rem;
   }
 
   .tcg-face-dock .btn-face.tcg-face-top {
