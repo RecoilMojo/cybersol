@@ -1,0 +1,44 @@
+{
+  "name": "cybersol",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "raffle": "tsx scripts/daily-raffle.ts",
+    "test:game": "tsx scripts/test-game.ts",
+    "test:abilities": "tsx scripts/test-abilities.ts",
+    "test": "tsx scripts/test-abilities.ts && tsx scripts/test-game.ts",
+    "smoke": "tsx scripts/smoke-api.ts"
+  },
+  "dependencies": {
+    "@noble/curves": "^2.3.0",
+    "@solana/wallet-adapter-base": "^0.9.27",
+    "@solana/wallet-adapter-phantom": "^0.9.29",
+    "@solana/wallet-adapter-react": "^0.15.39",
+    "@solana/wallet-adapter-react-ui": "^0.9.39",
+    "@solana/wallet-adapter-solflare": "^0.6.33",
+    "@solana/web3.js": "^1.98.4",
+    "@supabase/supabase-js": "^2.112.3",
+    "bs58": "^6.0.0",
+    "next": "15.5.23",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.23",
+    "tailwindcss": "^4",
+    "tsx": "^4.23.12",
+    "typescript": "^5"
+  }
+}

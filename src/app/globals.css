@@ -1,0 +1,8 @@
+@import "@solana/wallet-adapter-react-ui/styles.css";
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #05070c;
+  --color-foreground: #e8eef7;
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+}
